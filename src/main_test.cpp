@@ -27,34 +27,45 @@ int main(int argc, char** argv) {
 	ros::init(argc, argv, "main_test");
 	ros::NodeHandle nh;
 
-	std::string name_test;
+	//std::string name_test;
 	
-	
-	name_test = "cameraspace_home.csp";
-	
-//	void load_data(std::string& fname_, vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_);
-	vector<Eigen::Affine3d> gripper1_affines_test; 
-	vector<Eigen::Affine3d> gripper2_affines_test; 
-	vector<double> arrival_times_test; 
-	vector<double> gripper_angs1_test; 
-	vector<double> gripper_angs2_test;
+	//int data_size = 0;
+	// name_test = "cameraspace_home.csp";
 
-	//cout <<  "test begins" << gripper1_affines_test[0]<< "\n";
-
-	Playfile_loader Loader_trail;
-
-	Loader_trail.load_data(
-	name_test,
-	gripper1_affines_test, 
-	gripper2_affines_test, 
-	arrival_times_test, 
-	gripper_angs1_test, 
-	gripper_angs2_test);
-
-	cout <<  "test result" << arrival_times_test[0]<< "\n";
+	vector<std::string> name_list;
+	name_list.clear();
+	std::string templine = "not_empty";
+	std::string objname; //which is also the name of its corresponding file
+	//vector<std::string> objlist;
+	//objlist.clear();
 	
-	
-	
+	int n_entries = 0;
+
+	vector<Playfile_loader> Loader_objects;
+	Loader_objects.clear();
+
+	while (templine.length() != 0) {
+		cout << "Please type in files names: \n";
+		getline(cin, templine);
+		name_list.push_back(templine);
+		stringstream streamname(templine);
+		getline(streamname, objname, '.');
+		
+		//const char *objname = streamname.c_str();
+		//Loader_objects objname = new Loader_objects;
+		//Loader_objects[n_entries].load_data(templine);
+		//oader_objects streamname = new Loader_objects;
+
+		Playfile_loader Loader_trail;
+		Loader_trail.load_data(templine);
+		n_entries++;
+		if (templine.length() != 0){
+			cout << "Loading.. entry #"<< n_entries << ": "<< templine << "\n"<< "\n";
+			//cout << "Its loader: "<<objname<<" \n";
+		}
+	}
+
+
 	return 0;
 }
 

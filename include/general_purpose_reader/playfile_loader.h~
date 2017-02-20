@@ -28,11 +28,15 @@ std::istream& operator >> (std::istream & ins, data_t & data);
 //Defining a new class: Playfile_loader
 class Playfile_loader {
 public:
-	std::string fname;
+	//std::string fname;
 	std::vector<double> gripper_angs1, gripper_angs2;
 	std::vector<double> arrival_times;
 	std::vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
+	int data_size;
 	//Playfile_loader(); //constructor
+	void load_data(std::string& fname_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
+	void load_data(std::string& fname_);
+
 private:
 //ln217 ln225 davinci_playfile_cameraspace.cpp
 	std::vector<Eigen::Vector3d> x_vecs1, y_vecs1, z_vecs1, tip_origins1;
@@ -52,6 +56,6 @@ private:
 
 //	void load_data(std::string& fname_, vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_);
 
-	void load_data(std::string& fname_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_);
+	//void load_data(std::string& fname_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_);
 
 };

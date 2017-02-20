@@ -1,5 +1,5 @@
 //RN
-//14/02/2017
+//16/02/2017
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -29,13 +29,13 @@ std::istream& operator >> (std::istream & ins, data_t & data);
 class Playfile_loader {
 public:
 	//std::string fname;
-	std::vector<double> gripper_angs1, gripper_angs2;
-	std::vector<double> arrival_times;
-	std::vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
-	int data_size;
+	//std::vector<double> gripper_angs1, gripper_angs2;
+	//std::vector<double> arrival_times;
+	//std::vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
+	//int data_size;
 	//Playfile_loader(); //constructor
-	void load_data(std::string& fname_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
-	void load_data(std::string& fname_);
+	//void load_data(std::string& fname_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
+	void write_playfile(std::string& fname_);
 
 private:
 //ln217 ln225 davinci_playfile_cameraspace.cpp

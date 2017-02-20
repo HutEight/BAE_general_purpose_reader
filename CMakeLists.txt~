@@ -107,7 +107,7 @@ add_definitions(${EIGEN_DEFINITIONS})
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS ${catkin_INCLUDE_DIRS}
-  LIBRARIES playfile_loader
+  LIBRARIES playfile_loader playfile_writer_rn
   CATKIN_DEPENDS roscpp rospy std_msgs
   DEPENDS roscpp roslib
 )
@@ -119,9 +119,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-  ${catkin_INCLUDE_DIRS } include
-)
+include_directories(${catkin_INCLUDE_DIRS} include)
 #include_directories(general_purpose_reader/playfile_loader.h)
 ## Declare a C++ library
 # add_library(general_purpose_reader
@@ -133,11 +131,14 @@ include_directories(
 ## either from message generation or dynamic reconfigure
 # add_dependencies(general_purpose_reader ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_library(playfile_loader src/playfile_loader.cpp)
+add_library(playfile_writer_rn src/playfile_writer_rn.cpp)
+add_library(playfile_gearbox src/playfile_gearbox.cpp)
 
 ## Declare a C++ executable
 # add_executable(general_purpose_reader_node src/general_purpose_reader_node.cpp)
 add_executable(main_test src/main_test.cpp)
-
+add_executable(main_test_2 src/main_test_2.cpp)
+add_executable(general_purpose_reader src/general_purpose_reader.cpp)
 
 
 ## Add cmake target dependencies of the executable
@@ -149,6 +150,13 @@ add_executable(main_test src/main_test.cpp)
    ${catkin_LIBRARIES}
  )
 
+ target_link_libraries(main_test_2 playfile_writer_rn playfile_loader playfile_gearbox
+   ${catkin_LIBRARIES}
+ )
+
+target_link_libraries(general_purpose_reader playfile_writer_rn playfile_loader playfile_gearbox
+   ${catkin_LIBRARIES}
+ )
 
 #############
 ## Install ##

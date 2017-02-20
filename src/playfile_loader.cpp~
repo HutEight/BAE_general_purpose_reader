@@ -85,12 +85,11 @@ istream& operator>>(istream& ins, data_t& data) {
 
 
 
-void Playfile_loader::load_data(std::string& fname_, vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_){
+void Playfile_loader::load_data(std::string& fname_, vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_, int& data_size_){
 	//ros::NodeHandle nh;
 	//fname = fname_;
 
 	
-
 //ln167 ln189 davinci_playfile_cameraspace.cpp ----------
 	//open the trajectory file:
 	ifstream infile(fname_.c_str());
@@ -108,14 +107,14 @@ void Playfile_loader::load_data(std::string& fname_, vector<Eigen::Affine3d> &gr
 	// Complain if something went wrong.
 	if (!infile.eof()) {
 		cout << "error reading file!\n";
-		return 1;
+		//return 1;
 	}
 
 	infile.close();
 
 	// Otherwise, list some basic information about the file.
 	cout << "CSV file contains " << data.size() << " records.\n";
-	
+cout << "MARKER 01 \n"; //TODO DELETE	
 unsigned min_record_size = data[0].size();
 	unsigned max_record_size = 0;
 	for (unsigned n = 0; n < data.size(); n++) {
@@ -127,18 +126,18 @@ unsigned min_record_size = data[0].size();
 	if (max_record_size > 21) {
 		ROS_WARN("bad file");
 		cout << "The largest record has " << max_record_size << " fields.\n";
-		return 1;
+		//return 1;
 	}
 	if (min_record_size < 21) {
 		ROS_WARN("bad file");
 		cout << "The smallest record has " << min_record_size << " fields.\n";
-		return 1;
+		//return 1;
 	}
 //----------
 
 	nposes = data.size();
 
-
+ROS_INFO("MARKER 02"); //TODO DELETE
 //ln226 ln276 davinci_playfile_cameraspace.cpp ----------
 for (int n = 0; n < nposes; n++) {
 		// pack trajectory points, one at a time:
@@ -176,6 +175,8 @@ for (int n = 0; n < nposes; n++) {
 	//Eigen::Affine3d des_gripper_affine1,des_gripper_affine2;
 	//vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
 	//Eigen::Matrix3d R;
+
+	cout << "testing arrival times \n" << "There are " << nposes <<" records: \n";
 	for (int i=0;i<nposes;i++) {
 		R.col(0) = x_vecs1[i];
 		R.col(1) = y_vecs1[i];
@@ -190,13 +191,153 @@ for (int n = 0; n < nposes; n++) {
 		des_gripper_affine2.linear() = R;
 		des_gripper_affine2.translation() = tip_origins2[i];
 		gripper2_affines_.push_back(des_gripper_affine2);
+//demo
+		
+		
+		cout <<  "record " << i << ":" << arrival_times_[i]<< "\n";
+
+		cout << "x_vecs1[i] is \n" << x_vecs1[i] <<"\n" <<"\n";
 	}
 //----------
+	data_size_ = data.size();
+// Collected: gripper1_affines_, gripper2_affines_, arrival_times_, gripper_angs1_, gripper_angs2_ and data_size_ Above 
+// Test
+	//int i = 0;
 
-// Collected: gripper1_affines, gripper2_affines, arrival_times Above 
-
+	//cout << "testing arrival times \n" << "There are" << nposes <<" records: \n";
+	//for (i=0; i<data_size; i++){
+	//	cout <<  "record" << i << ":" << arrival_times_test[i]<< "\n";
 
 
 }
+//HERE HERE HERE HERE HERE HERE HERE HERE
+
+
+
+
+
+void Playfile_loader::load_data(std::string& fname_) {
+ifstream infile(fname_.c_str());
+	if (!infile){ // file couldn't be opened
+		cerr << "Error: file could not be opened; halting" << endl;
+		exit(1);
+	}
+
+	// Here is the data we want.
+	data_t data;  
+
+	// Here is the file containing the data. Read it into data.
+	infile >> data;
+
+	// Complain if something went wrong.
+	if (!infile.eof()) {
+		cout << "error reading file!\n";
+		//return 1;
+	}
+
+	infile.close();
+
+	// Otherwise, list some basic information about the file.
+	cout << "CSV file contains " << data.size() << " records.\n";
+	
+unsigned min_record_size = data[0].size();
+	unsigned max_record_size = 0;
+	for (unsigned n = 0; n < data.size(); n++) {
+		if (max_record_size < data[ n ].size())
+			max_record_size = data[ n ].size();
+		if (min_record_size > data[ n ].size())
+			min_record_size = data[ n ].size();
+	}
+	if (max_record_size > 21) {
+		ROS_WARN("bad file");
+		cout << "The largest record has " << max_record_size << " fields.\n";
+		//return 1;
+	}
+	if (min_record_size < 21) {
+		ROS_WARN("bad file");
+		cout << "The smallest record has " << min_record_size << " fields.\n";
+		//return 1;
+	}
+//----------
+
+	nposes = data.size();
+	
+
+//ln226 ln276 davinci_playfile_cameraspace.cpp ----------
+for (int n = 0; n < nposes; n++) {
+		// pack trajectory points, one at a time:
+		for (int i = 0; i < 3; i++) {
+			tip_origin1(i) = data[n][i];
+			x_vec1(i) = data[n][i + 3];
+			z_vec1(i) = data[n][i + 6];
+			tip_origin2(i) = data[n][i + 10];
+			x_vec2(i) = data[n][i + 13];
+			z_vec2(i) = data[n][i + 16];
+		}
+		gripper_ang1 = data[n][9];
+		gripper_ang2 = data[n][19];
+		//cout<<"read: gripper_ang2 = "<<gripper_ang2<<endl;
+		arrival_time = data[n][20];
+	
+		x_vecs1.push_back(x_vec1);
+		z_vecs1.push_back(z_vec1);
+		y_vec1 = z_vec1.cross(x_vec1); //construct consistent y-vec from x and z vecs'
+		y_vecs1.push_back(y_vec1);
+		tip_origins1.push_back(tip_origin1);
+		gripper_angs1.push_back(gripper_ang1);
+	
+		x_vecs2.push_back(x_vec2);
+		z_vecs2.push_back(z_vec2);
+		y_vec2 = z_vec2.cross(x_vec2);
+		y_vecs2.push_back(y_vec2);
+		tip_origins2.push_back(tip_origin2);
+		gripper_angs2.push_back(gripper_ang2); 
+
+		arrival_times.push_back(arrival_time);
+	}
+
+	cout <<  "There are " << nposes <<" records: \n";
+	for (int i=0;i<nposes;i++) {
+		R.col(0) = x_vecs1[i];
+		R.col(1) = y_vecs1[i];
+		R.col(2) = z_vecs1[i];
+		des_gripper_affine1.linear() = R;
+		des_gripper_affine1.translation() = tip_origins1[i];
+		gripper1_affines.push_back(des_gripper_affine1);
+
+		R.col(0) = x_vecs2[i];
+		R.col(1) = y_vecs2[i];
+		R.col(2) = z_vecs2[i];
+		des_gripper_affine2.linear() = R;
+		des_gripper_affine2.translation() = tip_origins2[i];
+		gripper2_affines.push_back(des_gripper_affine2);
+
+		
+		
+		
+	}
+//----------
+	data_size = data.size();
+	cout <<  "record " << fname_ << " has been loaded." << "\n";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
