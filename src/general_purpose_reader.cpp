@@ -92,7 +92,7 @@ while (ros::ok()){
 		cout << i << ". "<< name_list[i]<< "\n";
 		}
 	cout << "\n";
-	cout << "Please Choose Mode: \n" << "Press 1 for Gearbox;\n" << "Press 2 for Playfile Merger; \n"<< "Press 9 to change mode or restart. \n"<<"\n";
+	cout << "Please Choose Mode: \n" << "Press 1 for Gearbox;\n" << "Press 2 for Playfile Merger; \n"<< "Press 3 for time interpolation. \n"<< "Press 9 to change mode / return. \n"<<"\n";
 	cin >> mode_code;
 	switch (mode_code)
 	{
@@ -104,6 +104,7 @@ while (ros::ok()){
 		Loader_obj.load_data(name_list[choice]);
 		cout << "Please enter scale: x";
 		double scale;
+		
 		cin >> scale;
 		Gearbox_obj.change_gear(scale, Loader_obj.arrival_times, Loader_obj.data_size); 
 		
@@ -117,10 +118,34 @@ while (ros::ok()){
 
 		case 2://Merger
 			ROS_WARN("This Feature has not been added yet.");
+			
+			
+			
+			
 		break;
+
+		case 3://Interpolate extra time between lines
+		ROS_INFO("Ready to interpolate time.");
+		ROS_INFO("Choose one file to interpolate time:");
+		double length;
+		int line_num;
+		n_entries++;
+		int choice2;
+		cin >> choice2;
+		Loader_obj.load_data(name_list[choice2]);
 		
-		case 9://Null
-			ROS_WARN("Restarting..");
+		//bool interpolate (int& line_, double& interval_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int data_size_);
+		Gearbox_obj.interpolate(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Loader_obj.arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);	
+		Writer_obj.write_playfile(Gearbox_obj.gripper1_affines,Gearbox_obj.gripper2_affines, Gearbox_obj.new_arrival_times, Gearbox_obj.gripper_angs1, Gearbox_obj.gripper_angs2,Gearbox_obj.data_size);
+		
+		name_list.push_back(Writer_obj.oname);
+		//cout << Writer_obj.oname << "\n";
+		ROS_INFO("New playfile saved!");
+		//ROS_INFO("MARKER 2");	
+		break;
+
+		case 9://Null, RETURN
+			ROS_WARN("Returning..");
 		break;		
 
 	}

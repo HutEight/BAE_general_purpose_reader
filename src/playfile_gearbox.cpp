@@ -70,6 +70,50 @@ bool Playfile_gearbox::change_gear (double& scale_, std::vector<double> &arrival
 
 
 
+bool Playfile_gearbox::interpolate (vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_, int data_size_){
+	ROS_INFO("cord dump marker 01");
+	//cout << line_ << "\n";
+	int line_n;
+	double interval;
+
+	cout << "Please enter after which line you wish to interpolate some time: \n";
+	cin >> line_n;
+	cout << "Please enter time in seconds: ";
+	cin >> interval;	
+
+	for (int i = 0; i < (line_n); i++){	//ln 0, 1, .. ,line_
+		ROS_INFO("LOOP1");
+		gripper1_affines.push_back(gripper1_affines_[i]);
+		gripper2_affines.push_back(gripper2_affines_[i]);
+		new_arrival_times.push_back( arrival_times_[i] ); //TODO COREDUMPED HERE
+		gripper_angs1.push_back(gripper_angs1_[i]);
+		gripper_angs2.push_back(gripper_angs2_[i]);
+		
+	}
+	//ROS_INFO("cord dump marker 02");
+	for (int i = (line_n - 1); i < (line_n); i++){ //copy the designated line
+		ROS_INFO("LOOP2");
+		gripper1_affines.push_back(gripper1_affines_[line_n - 1]);
+		gripper2_affines.push_back(gripper2_affines_[line_n - 1]);
+		new_arrival_times.push_back( interval + arrival_times_[i]); //stay here for an extra amount of time (interval_)
+		gripper_angs1.push_back(gripper_angs1_[line_n - 1]);
+		gripper_angs2.push_back(gripper_angs2_[line_n - 1]);
+	}
+	//ROS_INFO("cord dump marker 03");
+	for (int i = (line_n); i < (data_size_ ); i++){
+		ROS_INFO("LOOP3");
+		gripper1_affines.push_back(gripper1_affines_[i]);
+		gripper2_affines.push_back(gripper2_affines_[i]);
+		new_arrival_times.push_back( arrival_times_[i]+interval); 
+		gripper_angs1.push_back(gripper_angs1_[i]);
+		gripper_angs2.push_back(gripper_angs2_[i]);
+	
+	}
+	data_size = data_size_ + 1;
+
+return 1;
+}
+
 
 
 
