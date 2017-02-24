@@ -25,7 +25,6 @@ typedef std::vector <record_t> data_t;
 std::istream& operator << (std::istream & ins, record_t & record);
 std::istream& operator << (std::istream & ins, data_t & data);
 
-
 class Playfile_writer_rn {
 public:
 	//std::string fname;
@@ -36,6 +35,7 @@ public:
 	//Playfile_loader(); //constructor
 	std::string oname;
 	void write_playfile(std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
+	void split_playfile(std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
 
 private:
 //ln217 ln225 davinci_playfile_cameraspace.cpp
@@ -52,7 +52,7 @@ private:
 //ln259 ln261 davinci_playfile_cameraspace.cpp
 	Eigen::Affine3d des_gripper_affine1,des_gripper_affine2;
 	//vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
-	Eigen::Matrix3d R;	
+	Eigen::Matrix3d R;
 
 
 

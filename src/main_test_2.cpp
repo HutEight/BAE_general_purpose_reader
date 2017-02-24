@@ -1,6 +1,5 @@
 //RN
-//16/02/2017
-//Designed to test the functions of RN's playfile writer
+//17/02/2017
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -15,68 +14,173 @@
 #include <Eigen/Geometry>
 #include <eigen3/Eigen/src/Core/Matrix.h>
 
-
-#include <string>
-#include <vector>
-
 #include <general_purpose_reader/playfile_loader.h>
 #include <general_purpose_reader/playfile_writer_rn.h>
+#include <general_purpose_reader/playfile_gearbox.h>
+#include <general_purpose_reader/trajectory_manipulator.h>
 using namespace std;
 
-int main(int argc, char** argv) {
-	//Set up a node.
-	ros::init(argc, argv, "main_test_2");
-	ros::NodeHandle nh;
 
-	std::string name_test;
-	
-	int data_size = 0;
-	name_test = "cameraspace_home.csp";
-	
-//	void load_data(std::string& fname_, vector<Eigen::Affine3d> &gripper1_affines_, vector<Eigen::Affine3d> &gripper2_affines_, vector<double> &arrival_times_, vector<double> &gripper_angs1_, vector<double> &gripper_angs2_);
-	vector<Eigen::Affine3d> gripper1_affines_test; 
-	vector<Eigen::Affine3d> gripper2_affines_test; 
-	vector<double> arrival_times_test; 
-	vector<double> gripper_angs1_test; 
-	vector<double> gripper_angs2_test;
+bool setFlag() {
+cout<<"Do you wish to Proceed and Select Mode (press 1) or Restart (press 2) or Quit (press 0)? \n";
+int wish;
+cin >> wish;
+switch (wish)
+{
+	case 1:
+		return 1;
+	break;
+	case 2:
+		return 0;
+	break;
+	case 0:
+		exit(0);
+	break;
 
-	//cout <<  "test begins" << gripper1_affines_test[0]<< "\n";
 
-	Playfile_loader Loader_trail;
-	Playfile_writer_rn Writer_trail;
-//test 1
-	Loader_trail.load_data(
-	name_test,
-	gripper1_affines_test, 
-	gripper2_affines_test, 
-	arrival_times_test, 
-	gripper_angs1_test, 
-	gripper_angs2_test,
-	data_size);
-	cout << data_size << "\n";//TODO delete checked
-	ROS_INFO("Data loading complete");//TODO delete checked
-//void Playfile_writer_rn::write_playfile(std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_)
-
-	Writer_trail.write_playfile(gripper1_affines_test, 
-	gripper2_affines_test, 
-	arrival_times_test, 
-	gripper_angs1_test, 
-	gripper_angs2_test,
-	data_size);
-	ROS_INFO("Data writing complete");//TODO delete failed
-//
-	//Loader_trail.load_data(
-	//name_test);
-	//int i = 0;
-
-	//cout << "testing arrival times \n" << "There are" << data_size <<" records: \n";
-	//for (i=0; i<data_size; i++){
-	//	cout <<  "record" << i << ":" << arrival_times_test[i]<< "\n";
-	//}
-	
-	
-	return 0;
 }
 
 
+}
 
+int main(int argc, char** argv) {
+	ros::init(argc, argv, "main_test_2");
+	ros::NodeHandle nh;
+//int en = 1;
+while (ros::ok()){
+//First enter and store a list of playfile names
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	ROS_INFO("GENERAL PURPOSE PLAYFILE READER");
+	cout << "***Please type in the playfile names and hit Enter to finish. ***\n"<<"\n";
+	std::string templine = "not_empty";
+
+	int n_entries = 0;
+	vector<std::string> name_list;
+	name_list.clear();
+
+
+	while (templine.length() != 0) {
+		cout << "Please enter a playfile name: \n";
+		getline(cin, templine);
+		name_list.push_back(templine); //name_list
+		stringstream streamname(templine);
+		n_entries++;
+		if (templine.length() != 0){
+			cout << "Loading.. entry #"<< n_entries << ": "<< templine << "\n"<< "\n";
+		}
+	}
+
+	cout << "You have entered "<< --n_entries << " files. \n";
+
+//Then choose 1. Gearbox, 2. Playfile Merger
+
+
+	int mode_code;
+
+	while (setFlag()){
+	ROS_INFO("Filelist:");
+
+	Playfile_loader Loader_obj;	//will not be put into switch case
+	Playfile_writer_rn Writer_obj;
+	Playfile_gearbox Gearbox_obj;
+	Trajectory_manipulator Manipulator_obj;
+
+	for (int i=0; i < n_entries; i++){
+		cout << i << ". "<< name_list[i]<< "\n";
+		}
+	cout << "\n";
+	cout << "Please Choose Mode: \n" << "Press 1 for Gearbox;\n" ;
+	cout << "Press 2 for Playfile Merger; \n"<< "Press 3 for time interpolation. \n";
+	cout << "Press 4 to move the gripper. \n"<< "Press 5 to generate a playfile to command the gripper to draw a circle \n";
+	cout << "Press 6 to split a playfile. \n"<<
+	cout << "Press 9 to change mode / return. \n"<<"\n";
+	cin >> mode_code;
+	switch (mode_code)
+	{
+		case 1://Gearbox
+		ROS_INFO("Choose one file to scale:");
+		n_entries++;
+		int choice;
+		cin >> choice;
+		Loader_obj.load_data(name_list[choice]);
+		cout << "Please enter scale: x";
+		double scale;
+
+		cin >> scale;
+		Gearbox_obj.change_gear(scale, Loader_obj.arrival_times, Loader_obj.data_size);
+
+		Writer_obj.write_playfile(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Gearbox_obj.new_arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);
+
+		name_list.push_back(Writer_obj.oname);
+		//cout << Writer_obj.oname << "\n";
+		ROS_INFO("New playfile saved!");
+		//ROS_INFO("MARKER 2");
+		break;
+
+		case 2://Merger
+			ROS_WARN("This Feature has not been added yet.");
+
+
+
+
+		break;
+
+		case 3://Interpolate extra time between lines
+		ROS_INFO("Ready to interpolate time.");
+		ROS_INFO("Choose one file to interpolate time:");
+		double length;
+		int line_num;
+		n_entries++;
+		int choice2;
+		cin >> choice2;
+		Loader_obj.load_data(name_list[choice2]);
+
+		//bool interpolate (int& line_, double& interval_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int data_size_);
+		Gearbox_obj.interpolate(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Loader_obj.arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);
+		Writer_obj.write_playfile(Gearbox_obj.gripper1_affines,Gearbox_obj.gripper2_affines, Gearbox_obj.new_arrival_times, Gearbox_obj.gripper_angs1, Gearbox_obj.gripper_angs2,Gearbox_obj.data_size);
+
+		name_list.push_back(Writer_obj.oname);
+		//cout << Writer_obj.oname << "\n";
+		ROS_INFO("New playfile saved!");
+		//ROS_INFO("MARKER 2");
+		break;
+
+		case 4: //Move the gripper
+			ROS_INFO("Choose one file to manipulate:");
+			int choice4;
+			cin >> choice4;
+			Loader_obj.load_data(name_list[choice4]);
+			Manipulator_obj.move_gripper_tip(Loader_obj.tip_origins1, Loader_obj.tip_origins2, Loader_obj.nposes);
+			Loader_obj.update_origins(Manipulator_obj.new_tip_origins1, Manipulator_obj.new_tip_origins2);
+			Writer_obj.write_playfile(Loader_obj.gripper1_affines,Loader_obj.gripper2_affines, Loader_obj.arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);
+		break;
+
+		case 5://Create a playfile to draw a circle
+			Manipulator_obj.draw_cycle ();
+			Writer_obj.write_playfile(Manipulator_obj.gripper1_affines,Manipulator_obj.gripper2_affines,Manipulator_obj.arrival_times,Manipulator_obj.gripper_angs1,Manipulator_obj.gripper_angs2,Manipulator_obj.data_size);
+		break;
+
+		case 6://Split a playfile into two
+		ROS_INFO("Choose one file to split:");
+		int choice6;
+		cin >> choice6;
+		Loader_obj.load_data(name_list[choice6]);
+		Writer_obj.split_playfile(Loader_obj.gripper1_affines,Loader_obj.gripper2_affines,Loader_obj.arrival_times,Loader_obj.gripper_angs1,Loader_obj.gripper_angs2,Loader_obj.data_size);
+
+
+		case 9://Null, RETURN
+			ROS_WARN("Returning..");
+		break;
+
+	}
+	}
+
+
+
+
+
+
+
+}
+}

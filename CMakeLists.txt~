@@ -159,10 +159,6 @@ target_link_libraries(general_purpose_reader playfile_writer_rn playfile_loader 
    ${catkin_LIBRARIES}
  )
 
-target_link_libraries(trajectory_manipulator playfile_writer_rn 
-   ${catkin_LIBRARIES}
- )
-
 #############
 ## Install ##
 #############

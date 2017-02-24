@@ -14,9 +14,6 @@
 #include <Eigen/Geometry>
 #include <eigen3/Eigen/src/Core/Matrix.h>
 
-#include <string>
-#include <vector>
-
 #include <general_purpose_reader/playfile_loader.h>
 #include <general_purpose_reader/playfile_writer_rn.h>
 #include <general_purpose_reader/playfile_gearbox.h>
@@ -57,16 +54,16 @@ while (ros::ok()){
 	ROS_INFO("GENERAL PURPOSE PLAYFILE READER");
 	cout << "***Please type in the playfile names and hit Enter to finish. ***\n"<<"\n";
 	std::string templine = "not_empty";
- 	
+
 	int n_entries = 0;
 	vector<std::string> name_list;
 	name_list.clear();
-	
+
 
 	while (templine.length() != 0) {
 		cout << "Please enter a playfile name: \n";
 		getline(cin, templine);
-		name_list.push_back(templine); //name_list 
+		name_list.push_back(templine); //name_list
 		stringstream streamname(templine);
 		n_entries++;
 		if (templine.length() != 0){
@@ -75,20 +72,20 @@ while (ros::ok()){
 	}
 
 	cout << "You have entered "<< --n_entries << " files. \n";
-	
+
 //Then choose 1. Gearbox, 2. Playfile Merger
-	
-	
+
+
 	int mode_code;
-	
+
 	while (setFlag()){
-	ROS_INFO("Filelist:");	
+	ROS_INFO("Filelist:");
 
 	Playfile_loader Loader_obj;	//will not be put into switch case
 	Playfile_writer_rn Writer_obj;
 	Playfile_gearbox Gearbox_obj;
 
-	for (int i=0; i < n_entries; i++){	
+	for (int i=0; i < n_entries; i++){
 		cout << i << ". "<< name_list[i]<< "\n";
 		}
 	cout << "\n";
@@ -104,12 +101,12 @@ while (ros::ok()){
 		Loader_obj.load_data(name_list[choice]);
 		cout << "Please enter scale: x";
 		double scale;
-		
+
 		cin >> scale;
-		Gearbox_obj.change_gear(scale, Loader_obj.arrival_times, Loader_obj.data_size); 
-		
+		Gearbox_obj.change_gear(scale, Loader_obj.arrival_times, Loader_obj.data_size);
+
 		Writer_obj.write_playfile(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Gearbox_obj.new_arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);
-		
+
 		name_list.push_back(Writer_obj.oname);
 		//cout << Writer_obj.oname << "\n";
 		ROS_INFO("New playfile saved!");
@@ -118,10 +115,10 @@ while (ros::ok()){
 
 		case 2://Merger
 			ROS_WARN("This Feature has not been added yet.");
-			
-			
-			
-			
+
+
+
+
 		break;
 
 		case 3://Interpolate extra time between lines
@@ -133,20 +130,22 @@ while (ros::ok()){
 		int choice2;
 		cin >> choice2;
 		Loader_obj.load_data(name_list[choice2]);
-		
+
 		//bool interpolate (int& line_, double& interval_, std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int data_size_);
-		Gearbox_obj.interpolate(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Loader_obj.arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);	
+		Gearbox_obj.interpolate(Loader_obj.gripper1_affines, Loader_obj.gripper2_affines, Loader_obj.arrival_times, Loader_obj.gripper_angs1, Loader_obj.gripper_angs2,Loader_obj.data_size);
 		Writer_obj.write_playfile(Gearbox_obj.gripper1_affines,Gearbox_obj.gripper2_affines, Gearbox_obj.new_arrival_times, Gearbox_obj.gripper_angs1, Gearbox_obj.gripper_angs2,Gearbox_obj.data_size);
-		
+
 		name_list.push_back(Writer_obj.oname);
 		//cout << Writer_obj.oname << "\n";
 		ROS_INFO("New playfile saved!");
-		//ROS_INFO("MARKER 2");	
+		//ROS_INFO("MARKER 2");
 		break;
+
+
 
 		case 9://Null, RETURN
 			ROS_WARN("Returning..");
-		break;		
+		break;
 
 	}
 	}
@@ -159,4 +158,3 @@ while (ros::ok()){
 
 }
 }
-
