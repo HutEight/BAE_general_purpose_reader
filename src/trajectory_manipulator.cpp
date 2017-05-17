@@ -1075,4 +1075,60 @@ void Trajectory_manipulator::csp_reverse(std::vector<Eigen::Affine3d> &gripper1_
 
 
 
+void Trajectory_manipulator::merge_files(std::vector<Eigen::Affine3d> &gripper1_affines_base, 
+					std::vector<Eigen::Affine3d> &gripper2_affines_base, 
+					std::vector<double> &arrival_times_base, 
+					std::vector<double> &gripper_angs1_base, 
+					std::vector<double> &gripper_angs2_base, 
+					int& data_size_base,
+					std::vector<Eigen::Affine3d> &gripper1_affines_, 
+					std::vector<Eigen::Affine3d> &gripper2_affines_, 
+					std::vector<double> &arrival_times_, 
+					std::vector<double> &gripper_angs1_, 
+					std::vector<double> &gripper_angs2_, 
+					int& data_size_)
+{
+
+	ROS_INFO("Calling csp merging function..");
+
+	gripper1_affines_base.insert(gripper1_affines_base.end(), gripper1_affines_.begin(), gripper1_affines_.end());
+	gripper2_affines_base.insert(gripper2_affines_base.end(), gripper2_affines_.begin(), gripper2_affines_.end());
+	gripper_angs1_base.insert(gripper_angs1_base.end(), gripper_angs1_.begin(), gripper_angs1_.end());
+	gripper_angs2_base.insert(gripper_angs2_base.end(), gripper_angs2_.begin(), gripper_angs2_.end());
+
+	for (int i=0;i<data_size_;i++) {
+
+		int increment_level = 0;
+		int increment = 0;
+		if ((data_size_base-1) < 0) {
+
+			increment = 0;} else {
+			increment = arrival_times_base[(data_size_base-1)];
+			}
+
+			arrival_times_base.push_back(arrival_times_[i] + increment);	
+
+	}
+
+	data_size_base = data_size_base + data_size_;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

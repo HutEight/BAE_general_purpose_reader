@@ -37,10 +37,10 @@ public:
   std::vector<Eigen::Affine3d> gripper1_affines,gripper2_affines;
   int data_size;
   // Create a temp container for the merger
-  std::vector<double> gripper_angs1_t, gripper_angs2_t;
-  std::vector<double> arrival_times_t;
-  std::vector<Eigen::Affine3d> gripper1_affines_t,gripper2_affines_t;
-  int data_size_t;
+  // std::vector<double> gripper_angs1_base, gripper_angs2_base;
+  // std::vector<double> arrival_times_base;
+  // std::vector<Eigen::Affine3d> gripper1_affines_base,gripper2_affines_base;
+  // int data_size_base;
 
   std::vector<Eigen::Vector3d> x_vecs1, y_vecs1, z_vecs1, tip_origins1;
   std::vector<Eigen::Vector3d> x_vecs2, y_vecs2,z_vecs2, tip_origins2;
@@ -58,6 +58,19 @@ public:
   void sweep_sphere_surface_psm1_restricted_test();
   void IK_solver_csp_to_jsp(std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
   void csp_reverse(std::vector<Eigen::Affine3d> &gripper1_affines_, std::vector<Eigen::Affine3d> &gripper2_affines_, std::vector<double> &arrival_times_, std::vector<double> &gripper_angs1_, std::vector<double> &gripper_angs2_, int& data_size_);
+
+	void merge_files(std::vector<Eigen::Affine3d> &gripper1_affines_base, 
+			std::vector<Eigen::Affine3d> &gripper2_affines_base, 
+			std::vector<double> &arrival_times_base, 
+			std::vector<double> &gripper_angs1_base, 
+			std::vector<double> &gripper_angs2_base, 
+			int& data_size_base,
+			std::vector<Eigen::Affine3d> &gripper1_affines_, 
+			std::vector<Eigen::Affine3d> &gripper2_affines_, 
+			std::vector<double> &arrival_times_, 
+			std::vector<double> &gripper_angs1_, 
+			std::vector<double> &gripper_angs2_, 
+			int& data_size_);
 
 // Playfile_writer_rn Writer_obj;
 
