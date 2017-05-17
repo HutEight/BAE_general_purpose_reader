@@ -75,35 +75,43 @@ bool Playfile_gearbox::change_gear_smart (double& scale_, std::vector<double> &a
 	//cin.clear();
 	cin >> line_n;
 	cout << "line 0 is: " <<line_0 << "and line_n is: " << line_n << "\n"; //TODO delete
-	double base_t = arrival_times_[line_0 -1 ];
+	double base_t0 = arrival_times_[line_0 -1 ];
 
-	num = (line_n - line_0)/10;
+	num = (line_n - line_0)/6;
 
 	for (int i = 0; i < num; i++){
-		scale_smart.push_back(scale_ * sin (i * PI / (2 * num)) + 1);
+		scale_smart.push_back(0.7 * scale_ * sin (i * PI / (2 * num)) + 0.3);
 	}
 	for (int i = num; i < (line_n - line_0); i++){
 		scale_smart.push_back(scale_);
 	}
 
-
 	for (int i =0; i < (line_0); i++) {
 		new_arrival_times.push_back( arrival_times_[i] );
 	}
 
-	for (int i = (line_0); i <= (line_n-1); i++) {
-		if (line_0 > 1){
-			new_arrival_times.push_back( (arrival_times_[i] - base_t)/scale_smart[i - line_0]  + base_t);
-		}
+	for (int i =(line_0); i < (line_0 + num); i++){
+		//new_arrival_times.push_back( (arrival_times_[i] - base_t0)/scale_smart[i - line_0]  + base_t0);
+		new_arrival_times.push_back( (arrival_times_[i] - arrival_times_[i-1])/scale_smart[i - line_0]  + new_arrival_times[i-1]);
+	}
 
-		else if (line_0 =1 ){
-		new_arrival_times.push_back( (arrival_times_[i]-arrival_times_[0])/scale_smart[i - line_0]  + arrival_times_[0]);}
+	double base_t = new_arrival_times[line_0 + num -1 ];
+
+	for (int i = (line_0 + num); i <= (line_n-1); i++) {
+		//if (line_0 > 1){
+			new_arrival_times.push_back( (arrival_times_[i] - arrival_times_[i-1])/scale_smart[i - line_0]  + new_arrival_times[i-1]);
+		//}
+
+		//else if (line_0 =1 ){
+		//new_arrival_times.push_back( (arrival_times_[i]-arrival_times_[0])/scale_smart[i - line_0]  + arrival_times_[0]);}
 	}
 
 	for (int i = line_n; i < data_size_; i++) {
 		new_arrival_times.push_back( arrival_times_[i] - arrival_times_[line_n - 1] + new_arrival_times[line_n - 1]); }
 
 	ROS_INFO("Scaling Complete!");
+	cout << "number" << num << "\n";
+	cout << "base_t" << base_t << "\n";
 	return 1;
 
 

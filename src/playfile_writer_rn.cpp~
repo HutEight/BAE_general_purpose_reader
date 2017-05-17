@@ -1,6 +1,6 @@
 //RN
 //14/02/2017
-#include <general_purpose_reader/playfile_writer_rn.h>
+
 #include <ros/ros.h>
 #include <ros/package.h>
 
@@ -14,7 +14,7 @@
 #include <Eigen/Geometry>
 #include <eigen3/Eigen/src/Core/Matrix.h>
 // TODO check and delete duplicates
-
+#include <general_purpose_reader/playfile_writer_rn.h>
 //#include <playfile_loader.h>
 
 using namespace std;

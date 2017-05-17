@@ -1,0 +1,21 @@
+Degrees - Radians - Line from the x1 demo playfile
+10	0.17	16
+20	0.35	19
+30	0.52	21
+40	0.7	24
+50	0,87	27
+
+Test Result:
+The first 40-degree (ln24) rotation needs to slow down.
+
+PS:
+The ln3 to ln13 (gripper open-close motion)
+
+Recommendation:
+1. The first 24 lines should remain the same
+2. Ln3 to ln13 to move double quick time
+3. Interpolate 7 sec after ln24 to allow the camera ready
+4. After interpolation, speed up range: ln26 to ln54 (total 28 lines)
+
+Appendix
+

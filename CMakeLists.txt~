@@ -134,13 +134,14 @@ add_library(playfile_loader src/playfile_loader.cpp)
 add_library(playfile_writer_rn src/playfile_writer_rn.cpp)
 add_library(playfile_gearbox src/playfile_gearbox.cpp)
 add_library(trajectory_manipulator src/trajectory_manipulator.cpp)
+#add_library(draw_circle_jointspace src/draw_circle_jointspace.cpp)
 
 ## Declare a C++ executable
 # add_executable(general_purpose_reader_node src/general_purpose_reader_node.cpp)
 add_executable(main_test src/main_test.cpp)
 add_executable(main_test_2 src/main_test_2.cpp)
 add_executable(general_purpose_reader src/general_purpose_reader.cpp)
-
+#add_executable(draw_circle_jointspace src/draw_circle_jointspace.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -151,11 +152,15 @@ add_executable(general_purpose_reader src/general_purpose_reader.cpp)
    ${catkin_LIBRARIES}
  )
 
- target_link_libraries(main_test_2 playfile_writer_rn playfile_loader playfile_gearbox trajectory_manipulator
+ target_link_libraries(main_test_2 playfile_writer_rn playfile_loader playfile_gearbox trajectory_manipulator davinci_kinematics
    ${catkin_LIBRARIES}
  )
 
 target_link_libraries(general_purpose_reader playfile_writer_rn playfile_loader playfile_gearbox
+   ${catkin_LIBRARIES}
+ )
+
+target_link_libraries(trajectory_manipulator playfile_writer_rn
    ${catkin_LIBRARIES}
  )
 

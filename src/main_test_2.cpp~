@@ -283,7 +283,7 @@ while (ros::ok()){
 			
 		break;
 
-		case 12: // CSP reverse
+		case 12://CSP reverse
 			cout << "\n\033[1;34mChoose one file to reverse:\033[0m\n";
 			int choice12;
 			cin >> choice12;
@@ -292,7 +292,7 @@ while (ros::ok()){
 			
 		break;
 
-		case 13: // Merge files
+		case 13:
 
 
 

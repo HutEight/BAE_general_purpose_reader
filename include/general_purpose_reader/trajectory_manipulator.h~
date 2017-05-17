@@ -40,7 +40,7 @@ public:
   std::vector<double> gripper_angs1_t, gripper_angs2_t;
   std::vector<double> arrival_times_t;
   std::vector<Eigen::Affine3d> gripper1_affines_t,gripper2_affines_t;
-  int data_size_t;
+  int data_size;
 
   std::vector<Eigen::Vector3d> x_vecs1, y_vecs1, z_vecs1, tip_origins1;
   std::vector<Eigen::Vector3d> x_vecs2, y_vecs2,z_vecs2, tip_origins2;
