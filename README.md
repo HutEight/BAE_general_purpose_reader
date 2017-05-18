@@ -1,4 +1,4 @@
 # GENERAL PURPOSE READER
-# BAE SYSTEMS
+BAE SYSTEMS
 
 A general purpose playfile tool for CWRU's dvrk playfile reader.
